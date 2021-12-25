@@ -1,5 +1,6 @@
 # KanjiVG.Animation
-Generates animated SVG files for [KanjiVG](https://github.com/KanjiVG/kanjivg) files
+Generates animated SVG files for [KanjiVG](https://github.com/KanjiVG/kanjivg) files.  
+Animations are started when the page is loaded as well as when the SVG is clicked.
 
 ![kanji](samples/6f22.svg)
 ![kanji](samples/5b57.svg)
