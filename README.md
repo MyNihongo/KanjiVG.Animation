@@ -1,6 +1,10 @@
 # KanjiVG.Animation
 Generates animated SVG files for [KanjiVG](https://github.com/KanjiVG/kanjivg) files
 
+![kanji](samples/6f22.svg)
+![kanji](samples/5b57.svg)
+
+## Running the animator
 ```console
 MyNihongo.KanjiVG.Animation -s "source path" -d "destination path"
 ```
