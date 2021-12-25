@@ -1,9 +1,9 @@
 ﻿using MyNihongo.KanaDetector.Extensions;
 using MyNihongo.KanjiVG.Animator.Resources.Const;
+using MyNihongo.KanjiVG.Animator.Utils;
 using MyNihongo.KanjiVG.Animator.Utils.Extensions;
 using NUglify;
 using NUglify.Html;
-using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -20,53 +20,49 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 
 	public Task GenerateAsync(SvgParams svgParams)
 	{
-		if (string.IsNullOrEmpty(svgParams.SourceDirectory))
-			throw new InvalidOperationException($"{nameof(svgParams.SourceDirectory)} is not provided");
+		if (!Directory.Exists(svgParams.SourceDirectory))
+			throw new InvalidOperationException($"{nameof(svgParams.SourceDirectory)} does not exist");
 
-		if (string.IsNullOrEmpty(svgParams.DestinationDirectory))
-			throw new InvalidOperationException($"{nameof(svgParams.DestinationDirectory)} is not provided");
+		if (!Directory.Exists(svgParams.DestinationDirectory))
+			throw new InvalidOperationException($"{nameof(svgParams.DestinationDirectory)} does not exist");
 
-		var assembly = Assembly.GetExecutingAssembly();
-		var resPaths = GetResourcePaths(assembly, svgParams.SourceDirectory, out var count);
-
-		var tasks = resPaths
-			.Select((x, i) =>
+		var tasks = GetResourcePaths(svgParams.SourceDirectory)
+			.Select<string, Task>(async (x, i) =>
 			{
 				if (!x.TryGetFileName(out var fileName))
-					return Task.CompletedTask;
+					return;
 
 				var kanjiChar = fileName.GetKanjiChar();
 				if (!kanjiChar.IsKanaOrKanji())
-					return Task.CompletedTask;
+					return;
 
-				var xmlDoc = GetXmlDocument(assembly, x);
+				var xmlDoc = await GetXmlDocument(x)
+					.ConfigureAwait(false);
+
 				xmlDoc = CreateAnimatedDocument(xmlDoc, fileName, svgParams);
-				Console.Write($"\r{i + 1}/{count}");
+				Console.Write($"\r{i + 1}");
 
 				var xmlString = MinifyXmlDoc(xmlDoc);
-				return xmlString.WriteTo(Path.Combine(svgParams.DestinationDirectory, $"{fileName}.svg"));
+
+				await xmlString.WriteTo(Path.Combine(svgParams.DestinationDirectory, $"{fileName}.svg"))
+					.ConfigureAwait(false);
 			});
 
 		return Task.WhenAll(tasks);
 	}
 
-	private static IEnumerable<string> GetResourcePaths(Assembly assembly, string folderPath, out int count)
-	{
-		var basePath = $"{assembly.GetName().Name}.{folderPath}".Replace('-', '_');
-		var resources = assembly.GetManifestResourceNames();
+	private static IEnumerable<string> GetResourcePaths(string folderPath) =>
+		Directory.EnumerateFiles(folderPath, "*svg");
 
-		count = resources.Length;
-		return resources.Where(x => x.StartsWith(basePath));
-	}
-
-	private static XDocument GetXmlDocument(Assembly assembly, string filePath)
+	private static async Task<XDocument> GetXmlDocument(string filePath)
 	{
 		string text;
 
-		using (var stream = assembly.GetManifestResourceStream(filePath) ?? throw new NullReferenceException($"Resource `{filePath}` not found"))
+		await using (var stream = FileUtils.AsyncStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
 		using (var reader = new StreamReader(stream))
 		{
-			text = reader.ReadToEnd();
+			text = await reader.ReadToEndAsync()
+				.ConfigureAwait(false);
 		}
 
 		return XDocument.Parse(text);

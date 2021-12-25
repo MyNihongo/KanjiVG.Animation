@@ -8,11 +8,14 @@ internal static class StringEx
 
 	public static async Task WriteTo(this string @this, string path)
 	{
-		await using var stream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite, 4086, true);
+		await using var stream = FileUtils.AsyncStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
 		await using var writer = new StreamWriter(stream);
 
-		await writer.WriteAsync(@this);
-		await writer.FlushAsync();
+		await writer.WriteAsync(@this)
+			.ConfigureAwait(false);
+
+		await writer.FlushAsync()
+			.ConfigureAwait(false);
 	}
 
 	public static IReadOnlyDictionary<string, string> ParseStyleAttrs(this string @this)
@@ -34,33 +37,13 @@ internal static class StringEx
 
 	public static bool TryGetFileName(this string path, out string fileName)
 	{
-		int start = 0, end = 0;
-		fileName = string.Empty;
+		fileName = Path.GetFileNameWithoutExtension(path);
 
-		for (int i = path.Length - 1, j = 0; i >= 0 && j != 2; i--)
-		{
-			// Skip modified kanji files
-			if (path[i] == '-')
-				return false;
-			if (path[i] != '.')
-				continue;
+		// Skip modified kanji files
+		if (fileName.Contains('-'))
+			return false;
 
-			switch (++j)
-			{
-				case 1:
-					end = i;
-					break;
-				case 2:
-					start = i + 1;
-					break;
-			}
-		}
-
-		if (start == end)
-			throw new InvalidOperationException("kanji unicode is not found");
-
-		fileName = path[start..end].PadLeft(6, '0');
-
+		fileName = fileName.PadLeft(6, '0');
 		if (fileName.StartsWith("00"))
 			fileName = fileName[2..];
 
