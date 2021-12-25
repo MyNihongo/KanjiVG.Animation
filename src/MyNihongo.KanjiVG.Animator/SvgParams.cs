@@ -1,17 +1,7 @@
 ﻿namespace MyNihongo.KanjiVG.Animator;
 
-public sealed class SvgParams
+public sealed record SvgParams(string SourceDirectory, string DestinationDirectory)
 {
-	public SvgParams(string sourceDirectory, string destinationDirectory)
-	{
-		SourceDirectory = sourceDirectory;
-		DestinationDirectory = destinationDirectory;
-	}
-
-	public string SourceDirectory { get; }
-
-	public string DestinationDirectory { get; }
-
 	public int Rounding { get; init; }
 
 	public string OuterStroke { get; init; } = string.Empty;

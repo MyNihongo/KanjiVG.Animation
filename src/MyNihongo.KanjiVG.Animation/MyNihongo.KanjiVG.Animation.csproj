@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MyNihongo.KanjiVG.Animator\MyNihongo.KanjiVG.Animator.csproj" />
   </ItemGroup>
 
