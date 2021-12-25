@@ -1,0 +1,3 @@
+[submodule "src/MyNihongo.DataCreator/Resources/JapaneseData"]
+	path = src/MyNihongo.DataCreator/Resources/JapaneseData
+	url = https://github.com/MyNihongo/JapaneseData.git
