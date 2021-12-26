@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace MyNihongo.KanjiVG.Animator.Utils.Extensions;
+﻿namespace MyNihongo.KanjiVG.Animator.Utils.Extensions;
 
 internal static class StringEx
 {
