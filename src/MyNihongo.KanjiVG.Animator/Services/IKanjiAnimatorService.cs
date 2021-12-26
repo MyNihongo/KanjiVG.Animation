@@ -2,5 +2,5 @@
 
 public interface IKanjiAnimatorService
 {
-	Task GenerateAsync(SvgParams svgParams);
+	string Generate(string text, string fileName, SvgParams svgParams);
 }

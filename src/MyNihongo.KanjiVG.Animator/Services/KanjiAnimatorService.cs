@@ -1,9 +1,5 @@
-﻿using MyNihongo.KanaDetector.Extensions;
-using MyNihongo.KanjiVG.Animator.Resources.Const;
-using MyNihongo.KanjiVG.Animator.Utils;
+﻿using MyNihongo.KanjiVG.Animator.Resources.Const;
 using MyNihongo.KanjiVG.Animator.Utils.Extensions;
-using NUglify;
-using NUglify.Html;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -13,69 +9,12 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 {
 	private const string DefaultNamespace = "http://www.w3.org/2000/svg";
 
-	private static readonly HtmlSettings MinifySettings = new()
+	public string Generate(string text, string fileName, SvgParams svgParams)
 	{
-		RemoveAttributeQuotes = false
-	};
+		var xmlDoc = XDocument.Parse(text);
+		xmlDoc = CreateAnimatedDocument(xmlDoc, fileName, svgParams);
 
-	public Task GenerateAsync(SvgParams svgParams)
-	{
-		if (!Directory.Exists(svgParams.SourceDirectory))
-			throw new InvalidOperationException($"{nameof(svgParams.SourceDirectory)} does not exist");
-
-		if (!Directory.Exists(svgParams.DestinationDirectory))
-			throw new InvalidOperationException($"{nameof(svgParams.DestinationDirectory)} does not exist");
-
-		var tasks = GetResourcePaths(svgParams.SourceDirectory)
-			.Select<string, Task>(async (x, i) =>
-			{
-				if (!x.TryGetFileName(out var fileName))
-					return;
-
-				var kanjiChar = fileName.GetKanjiChar();
-				if (!kanjiChar.IsKanaOrKanji())
-					return;
-
-				var xmlDoc = await GetXmlDocument(x)
-					.ConfigureAwait(false);
-
-				xmlDoc = CreateAnimatedDocument(xmlDoc, fileName, svgParams);
-				Console.Write($"\r{i + 1}");
-
-				var xmlString = MinifyXmlDoc(xmlDoc);
-
-				await xmlString.WriteTo(Path.Combine(svgParams.DestinationDirectory, $"{fileName}.svg"))
-					.ConfigureAwait(false);
-			});
-
-		return Task.WhenAll(tasks);
-	}
-
-	private static IEnumerable<string> GetResourcePaths(string folderPath) =>
-		Directory.EnumerateFiles(folderPath, "*svg");
-
-	private static async Task<XDocument> GetXmlDocument(string filePath)
-	{
-		string text;
-
-		await using (var stream = FileUtils.AsyncStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-		using (var reader = new StreamReader(stream))
-		{
-			text = await reader.ReadToEndAsync()
-				.ConfigureAwait(false);
-		}
-
-		return XDocument.Parse(text);
-	}
-
-	private static string MinifyXmlDoc(XDocument xmlDoc)
-	{
-		var xmlString = xmlDoc.ToString();
-		var result = Uglify.Html(xmlString, MinifySettings);
-		if (result.HasErrors)
-			throw new InvalidOperationException("Cannot minify the SVG");
-
-		return result.Code;
+		return xmlDoc.Minify();
 	}
 
 	private static XDocument CreateAnimatedDocument(XDocument src, string fileName, SvgParams svgParams)
@@ -94,18 +33,18 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 				continue;
 			}
 
-			if (node is not XElement element || !HandleAttributes(element, svgParams, out var elementId))
+			if (node is not XElement element)
 				continue;
 
-			if (element.Name.LocalName == SvgElements.Svg)
-			{
-				element.SetAttributeValue(XNames.Id, fileName);
-				svgElement = element;
-				continue;
-			}
-
+			HandleAttributes(element, svgParams, out var elementId);
 			switch (element.Name.LocalName)
 			{
+				case SvgElements.Svg:
+					{
+						element.SetAttributeValue(XNames.Id, fileName);
+						svgElement = element;
+						break;
+					}
 				case SvgElements.Path:
 					{
 						var animatedPath = element.Copy();
@@ -122,8 +61,6 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 						svgElement = null;
 						break;
 					}
-				default:
-					continue;
 			}
 		}
 
@@ -135,7 +72,7 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 		return src;
 	}
 
-	private static bool HandleAttributes(XElement element, SvgParams svgParams, out string id)
+	private static void HandleAttributes(XElement element, SvgParams svgParams, out string id)
 	{
 		id = string.Empty;
 		var attrs = element.Attributes()
@@ -149,7 +86,7 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 					if (attr.Value.Contains("StrokeNumbers"))
 					{
 						element.Remove();
-						return false;
+						return;
 					}
 					else
 					{
@@ -180,11 +117,11 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 				case "radical":
 				case "position":
 				case "part":
+				case "width":
+				case "height":
 					attr.Remove();
 					break;
 			}
-
-		return true;
 	}
 
 	private static void SetInnerGraphic(XElement graphicElement, SvgParams svgParams)
