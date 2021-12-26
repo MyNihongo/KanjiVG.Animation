@@ -1,6 +1,6 @@
 ﻿using CommandLine;
-using MyNihongo.KanjiVG.Animation;
-using MyNihongo.KanjiVG.Animation.Services;
+using MyNihongo.KanjiVG.Animator;
+using MyNihongo.KanjiVG.Animator.Services;
 
 await Parser.Default.ParseArguments<Args>(args)
 	.WithParsedAsync(new KanjiAnimationCreator().CreateAsync);

@@ -1,6 +1,6 @@
-﻿using MyNihongo.KanjiVG.Animator;
+﻿using MyNihongo.KanjiVG.Animation;
 
-namespace MyNihongo.KanjiVG.Animation.Utils.Extensions;
+namespace MyNihongo.KanjiVG.Animator.Utils.Extensions;
 
 internal static class ArgsEx
 {
