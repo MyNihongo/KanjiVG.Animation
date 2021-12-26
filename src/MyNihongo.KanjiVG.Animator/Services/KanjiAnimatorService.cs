@@ -94,18 +94,18 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 				continue;
 			}
 
-			if (node is not XElement element || !HandleAttributes(element, svgParams, out var elementId))
+			if (node is not XElement element)
 				continue;
 
-			if (element.Name.LocalName == SvgElements.Svg)
-			{
-				element.SetAttributeValue(XNames.Id, fileName);
-				svgElement = element;
-				continue;
-			}
-
+			HandleAttributes(element, svgParams, out var elementId);
 			switch (element.Name.LocalName)
 			{
+				case SvgElements.Svg:
+					{
+						element.SetAttributeValue(XNames.Id, fileName);
+						svgElement = element;
+						break;
+					}
 				case SvgElements.Path:
 					{
 						var animatedPath = element.Copy();
@@ -122,8 +122,6 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 						svgElement = null;
 						break;
 					}
-				default:
-					continue;
 			}
 		}
 
@@ -135,7 +133,7 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 		return src;
 	}
 
-	private static bool HandleAttributes(XElement element, SvgParams svgParams, out string id)
+	private static void HandleAttributes(XElement element, SvgParams svgParams, out string id)
 	{
 		id = string.Empty;
 		var attrs = element.Attributes()
@@ -149,7 +147,7 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 					if (attr.Value.Contains("StrokeNumbers"))
 					{
 						element.Remove();
-						return false;
+						return;
 					}
 					else
 					{
@@ -183,8 +181,6 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 					attr.Remove();
 					break;
 			}
-
-		return true;
 	}
 
 	private static void SetInnerGraphic(XElement graphicElement, SvgParams svgParams)
