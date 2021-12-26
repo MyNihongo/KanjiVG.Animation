@@ -1,9 +1,8 @@
 ﻿using MyNihongo.KanaDetector.Extensions;
+using MyNihongo.KanjiVG.Animation.Utils;
 using MyNihongo.KanjiVG.Animation.Utils.Extensions;
 using MyNihongo.KanjiVG.Animator.Services;
-using MyNihongo.KanjiVG.Animator.Utils;
 using System.Text;
-using MyNihongo.KanjiVG.Animation.Utils;
 
 namespace MyNihongo.KanjiVG.Animation.Services;
 
@@ -39,7 +38,7 @@ internal sealed class KanjiAnimationCreator
 				await svgString.WriteTo(Path.Combine(args.DestinationDirectory, $"{fileName}.svg"))
 					.ConfigureAwait(false);
 
-				Console.Write($"\r{i+1}");
+				Console.Write($"\r{i + 1}");
 			});
 
 		return Task.WhenAll(tasks);
