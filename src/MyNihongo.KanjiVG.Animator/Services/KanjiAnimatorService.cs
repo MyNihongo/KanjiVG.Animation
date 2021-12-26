@@ -178,6 +178,8 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 				case "radical":
 				case "position":
 				case "part":
+				case "width":
+				case "height":
 					attr.Remove();
 					break;
 			}
