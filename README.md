@@ -5,9 +5,19 @@ Animations are started when the page is loaded as well as when the SVG is clicke
 ![kanji](samples/6f22.svg)
 ![kanji](samples/5b57.svg)
 
-## Running the animator
+## Running CLI
 ```console
 MyNihongo.KanjiVG.Animation -s "source path" -d "destination path"
+```
+
+## Running the service
+```cs
+var svgText = "<svg xmlns=\"http://www.w3.org/2000/svg\"...";
+var fileName = "6f22";
+var svgParams = new SvgParams();
+IKanjiAnimatorService service = new KanjiAnimatorService();
+
+var result = service.Generate(svgText, fileName, svgParams);
 ```
 
 #### List of args

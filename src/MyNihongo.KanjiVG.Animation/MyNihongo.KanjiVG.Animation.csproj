@@ -1,18 +1,34 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<Version>1.0.0</Version>
+		<Authors>MyNihongo</Authors>
+		<Product>KanjiVG animator</Product>
+		<Description>Create animated KanjiVG</Description>
+		<Copyright>Copyright © 2021 MyNihongo</Copyright>
+		<PackageProjectUrl>https://github.com/MyNihongo/KanjiVG.Animation</PackageProjectUrl>
+		<PackageReleaseNotes>https://github.com/MyNihongo/KanjiVG.Animation/releases</PackageReleaseNotes>
+		<PackageTags>svg;animation;kana;kanji;kanjivg</PackageTags>
+		<RepositoryUrl>https://github.com/MyNihongo/KanjiVG.Animation</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageIcon>favico.png</PackageIcon>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MyNihongo.KanaDetector" Version="1.0.1.1" />
+		<PackageReference Include="NUglify" Version="1.17.3" />
+		<PackageReference Include="SvgPathProperties" Version="1.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MyNihongo.KanjiVG.Animator\MyNihongo.KanjiVG.Animator.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\favico.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>

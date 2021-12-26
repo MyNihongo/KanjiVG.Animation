@@ -1,10 +1,9 @@
-﻿using MyNihongo.KanaDetector.Extensions;
-using MyNihongo.KanjiVG.Animation.Utils;
-using MyNihongo.KanjiVG.Animation.Utils.Extensions;
-using MyNihongo.KanjiVG.Animator.Services;
-using System.Text;
+﻿using System.Text;
+using MyNihongo.KanaDetector.Extensions;
+using MyNihongo.KanjiVG.Animation.CLI.Utils;
+using MyNihongo.KanjiVG.Animation.CLI.Utils.Extensions;
 
-namespace MyNihongo.KanjiVG.Animation.Services;
+namespace MyNihongo.KanjiVG.Animation.CLI.Services;
 
 internal sealed class KanjiAnimationCreator
 {

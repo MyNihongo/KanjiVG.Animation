@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace MyNihongo.KanjiVG.Animator.Resources.Const;
+namespace MyNihongo.KanjiVG.Animation.Resources.Const;
 
 internal static class XNames
 {

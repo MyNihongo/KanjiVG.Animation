@@ -1,4 +1,4 @@
-﻿namespace MyNihongo.KanjiVG.Animation.Utils;
+﻿namespace MyNihongo.KanjiVG.Animation.CLI.Utils;
 
 internal static class FileUtils
 {
