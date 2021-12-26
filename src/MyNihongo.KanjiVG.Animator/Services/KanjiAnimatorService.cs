@@ -1,7 +1,5 @@
 ﻿using MyNihongo.KanjiVG.Animator.Resources.Const;
 using MyNihongo.KanjiVG.Animator.Utils.Extensions;
-using NUglify;
-using NUglify.Html;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -11,27 +9,12 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 {
 	private const string DefaultNamespace = "http://www.w3.org/2000/svg";
 
-	private static readonly HtmlSettings MinifySettings = new()
-	{
-		RemoveAttributeQuotes = false
-	};
-
 	public string Generate(string text, string fileName, SvgParams svgParams)
 	{
 		var xmlDoc = XDocument.Parse(text);
 		xmlDoc = CreateAnimatedDocument(xmlDoc, fileName, svgParams);
 
-		return MinifyXmlDoc(xmlDoc);
-	}
-
-	private static string MinifyXmlDoc(XDocument xmlDoc)
-	{
-		var xmlString = xmlDoc.ToString();
-		var result = Uglify.Html(xmlString, MinifySettings);
-		if (result.HasErrors)
-			throw new InvalidOperationException("Cannot minify the SVG");
-
-		return result.Code;
+		return xmlDoc.Minify();
 	}
 
 	private static XDocument CreateAnimatedDocument(XDocument src, string fileName, SvgParams svgParams)
