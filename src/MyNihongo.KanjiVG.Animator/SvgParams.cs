@@ -1,4 +1,4 @@
-﻿namespace MyNihongo.KanjiVG.Animation;
+﻿namespace MyNihongo.KanjiVG.Animator;
 
 public sealed record SvgParams
 {

@@ -1,4 +1,4 @@
-﻿namespace MyNihongo.KanjiVG.Animation.Resources.Const;
+﻿namespace MyNihongo.KanjiVG.Animator.Resources.Const;
 
 internal static class SvgAttrs
 {

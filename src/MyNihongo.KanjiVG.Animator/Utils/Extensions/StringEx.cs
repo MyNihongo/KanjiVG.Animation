@@ -1,4 +1,4 @@
-﻿namespace MyNihongo.KanjiVG.Animation.Utils.Extensions;
+﻿namespace MyNihongo.KanjiVG.Animator.Utils.Extensions;
 
 internal static class StringEx
 {

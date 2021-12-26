@@ -1,9 +1,9 @@
 ﻿using System.Xml;
 using System.Xml.Linq;
-using MyNihongo.KanjiVG.Animation.Resources.Const;
-using MyNihongo.KanjiVG.Animation.Utils.Extensions;
+using MyNihongo.KanjiVG.Animator.Resources.Const;
+using MyNihongo.KanjiVG.Animator.Utils.Extensions;
 
-namespace MyNihongo.KanjiVG.Animation;
+namespace MyNihongo.KanjiVG.Animator;
 
 public sealed class KanjiAnimatorService : IKanjiAnimatorService
 {

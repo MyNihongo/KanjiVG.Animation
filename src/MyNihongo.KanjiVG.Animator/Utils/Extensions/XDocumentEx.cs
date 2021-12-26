@@ -1,8 +1,8 @@
-﻿using System.Xml.Linq;
-using NUglify;
+﻿using NUglify;
 using NUglify.Html;
+using System.Xml.Linq;
 
-namespace MyNihongo.KanjiVG.Animation.Utils.Extensions;
+namespace MyNihongo.KanjiVG.Animator.Utils.Extensions;
 
 internal static class XDocumentEx
 {

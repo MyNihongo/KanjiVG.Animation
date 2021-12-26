@@ -1,8 +1,8 @@
 ﻿using System.Xml.Linq;
-using MyNihongo.KanjiVG.Animation.Resources.Const;
+using MyNihongo.KanjiVG.Animator.Resources.Const;
 using SvgPathProperties;
 
-namespace MyNihongo.KanjiVG.Animation.Utils.Extensions;
+namespace MyNihongo.KanjiVG.Animator.Utils.Extensions;
 
 internal static class XElementEx
 {
