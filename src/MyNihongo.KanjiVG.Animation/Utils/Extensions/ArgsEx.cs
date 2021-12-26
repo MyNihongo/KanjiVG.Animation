@@ -5,7 +5,7 @@ namespace MyNihongo.KanjiVG.Animation.Utils.Extensions;
 internal static class ArgsEx
 {
 	public static SvgParams ToSvgParams(this Args @this) =>
-		new(@this.SourceDirectory, @this.DestinationDirectory)
+		new()
 		{
 			Rounding = @this.Rounding,
 			OuterStroke = @this.OuterStroke,

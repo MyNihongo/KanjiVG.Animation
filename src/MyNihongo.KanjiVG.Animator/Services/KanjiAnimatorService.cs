@@ -1,6 +1,4 @@
-﻿using MyNihongo.KanaDetector.Extensions;
-using MyNihongo.KanjiVG.Animator.Resources.Const;
-using MyNihongo.KanjiVG.Animator.Utils;
+﻿using MyNihongo.KanjiVG.Animator.Resources.Const;
 using MyNihongo.KanjiVG.Animator.Utils.Extensions;
 using NUglify;
 using NUglify.Html;
@@ -18,54 +16,12 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 		RemoveAttributeQuotes = false
 	};
 
-	public Task GenerateAsync(SvgParams svgParams)
+	public string Generate(string text, string fileName, SvgParams svgParams)
 	{
-		if (!Directory.Exists(svgParams.SourceDirectory))
-			throw new InvalidOperationException($"{nameof(svgParams.SourceDirectory)} does not exist");
+		var xmlDoc = XDocument.Parse(text);
+		xmlDoc = CreateAnimatedDocument(xmlDoc, fileName, svgParams);
 
-		if (!Directory.Exists(svgParams.DestinationDirectory))
-			throw new InvalidOperationException($"{nameof(svgParams.DestinationDirectory)} does not exist");
-
-		var tasks = GetResourcePaths(svgParams.SourceDirectory)
-			.Select<string, Task>(async (x, i) =>
-			{
-				if (!x.TryGetFileName(out var fileName))
-					return;
-
-				var kanjiChar = fileName.GetKanjiChar();
-				if (!kanjiChar.IsKanaOrKanji())
-					return;
-
-				var xmlDoc = await GetXmlDocument(x)
-					.ConfigureAwait(false);
-
-				xmlDoc = CreateAnimatedDocument(xmlDoc, fileName, svgParams);
-				Console.Write($"\r{i + 1}");
-
-				var xmlString = MinifyXmlDoc(xmlDoc);
-
-				await xmlString.WriteTo(Path.Combine(svgParams.DestinationDirectory, $"{fileName}.svg"))
-					.ConfigureAwait(false);
-			});
-
-		return Task.WhenAll(tasks);
-	}
-
-	private static IEnumerable<string> GetResourcePaths(string folderPath) =>
-		Directory.EnumerateFiles(folderPath, "*svg");
-
-	private static async Task<XDocument> GetXmlDocument(string filePath)
-	{
-		string text;
-
-		await using (var stream = FileUtils.AsyncStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-		using (var reader = new StreamReader(stream))
-		{
-			text = await reader.ReadToEndAsync()
-				.ConfigureAwait(false);
-		}
-
-		return XDocument.Parse(text);
+		return MinifyXmlDoc(xmlDoc);
 	}
 
 	private static string MinifyXmlDoc(XDocument xmlDoc)
