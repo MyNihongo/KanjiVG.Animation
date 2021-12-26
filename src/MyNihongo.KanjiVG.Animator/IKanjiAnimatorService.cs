@@ -1,4 +1,4 @@
-﻿namespace MyNihongo.KanjiVG.Animator;
+﻿namespace MyNihongo.KanjiVG.Animation;
 
 public interface IKanjiAnimatorService
 {
