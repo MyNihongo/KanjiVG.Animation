@@ -1,16 +1,21 @@
-﻿namespace MyNihongo.KanjiVG.Animation.CLI.Utils.Extensions;
+﻿namespace MyNihongo.KanjiVG.Animation.Utils.Extensions;
 
 internal static class StringEx
 {
-	public static async Task WriteTo(this string @this, string path)
+	public static IReadOnlyDictionary<string, string> ParseStyleAttrs(this string @this)
 	{
-		await using var stream = FileUtils.AsyncStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-		await using var writer = new StreamWriter(stream);
+		var dictionary = new Dictionary<string, string>();
+		var pairs = @this.Split(';', StringSplitOptions.RemoveEmptyEntries);
 
-		await writer.WriteAsync(@this)
-			.ConfigureAwait(false);
+		for (var i = 0; i < pairs.Length; i++)
+		{
+			var keyValue = pairs[i].Split(':');
+			if (keyValue.Length != 2)
+				continue;
 
-		await writer.FlushAsync()
-			.ConfigureAwait(false);
+			dictionary.Add(keyValue[0], keyValue[1]);
+		}
+
+		return dictionary;
 	}
 }
