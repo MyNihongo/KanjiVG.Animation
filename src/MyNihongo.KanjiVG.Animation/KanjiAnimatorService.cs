@@ -140,6 +140,7 @@ public sealed class KanjiAnimatorService : IKanjiAnimatorService
 
 		var duration = pathLength switch
 		{
+			< 15d => pathLength / 50d,
 			< 60d => pathLength / 100d,
 			_ => pathLength / 133
 		};
